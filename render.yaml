@@ -3,9 +3,8 @@ services:
     name: object-identification
     env: python
     plan: free
-    region: oregon
     buildCommand: "pip install -r requirements.txt"
     startCommand: "gunicorn app:app"
     envVars:
       - key: PYTHON_VERSION
-        value: 3.13.3
+        value: 3.12.3
