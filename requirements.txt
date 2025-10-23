@@ -3,3 +3,6 @@ ultralytics==8.2.50
 opencv-python-headless==4.10.0.84
 Werkzeug==3.0.3
 gunicorn==23.0.0
+torch==2.3.0+cpu
+torchvision==0.18.0+cpu
+--extra-index-url https://download.pytorch.org/whl/cpu

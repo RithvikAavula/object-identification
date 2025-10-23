@@ -6,7 +6,9 @@ from datetime import datetime
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
-model = YOLO("yolov8m.pt")  # YOLOv8 medium
+model = YOLO("yolov8m.pt")
+model.to("cpu")
+  # YOLOv8 medium
 
 UPLOAD_FOLDER = "static/uploads"
 SAVED_FRAMES = "static/saved_frames"
