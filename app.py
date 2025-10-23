@@ -116,13 +116,13 @@ async function updateConfidence(val){
     await fetch('/confidence',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({confidence:val})});
 }
 async function loadSavedFrames(){
-    const res=await fetch('/saved-frames');
+    const res=await(fetch('/saved-frames'));
     const data=await res.json();
     const container=document.getElementById('saved_container'); container.innerHTML='';
     data.frames.forEach(f=>{ let img=document.createElement('img'); img.src='/saved_frames/'+f; img.onclick=()=>viewModal(img.src); container.appendChild(img); });
 }
 async function loadUploadedImages(){
-    const res=await fetch('/uploaded-frames');
+    const res=await(fetch('/uploaded-frames'));
     const data=await res.json();
     const container=document.getElementById('upload_container'); container.innerHTML='';
     data.frames.forEach(f=>{ let img=document.createElement('img'); img.src='/uploads/'+f; img.onclick=()=>viewModal(img.src); container.appendChild(img); });
@@ -152,8 +152,6 @@ loadSavedFrames(); loadUploadedImages();
 </body>
 </html>
 """
-
-# ---------------- Backend ----------------
 
 @app.route('/')
 def index():
@@ -210,7 +208,6 @@ def video_feed():
 def metrics():
     return jsonify(last_metrics)
 
-# ---------- Save Live Frame ----------
 @app.route('/save-frame', methods=['POST'])
 def save_frame():
     global camera
@@ -226,7 +223,6 @@ def save_frame():
     cv2.imwrite(path, frame)
     return jsonify({"status":"saved","filename":filename})
 
-# ---------- Upload & Detect ----------
 @app.route('/upload-detect', methods=['POST'])
 def upload_detect():
     if 'image' not in request.files:
@@ -243,7 +239,6 @@ def upload_detect():
     cv2.imwrite(path,img)
     return jsonify({"status":"ok","filename":filename})
 
-# ---------- Saved / Uploaded Frames ----------
 @app.route('/saved-frames')
 def get_saved_frames():
     return jsonify({"frames": os.listdir(SAVED_FRAMES)})
@@ -276,5 +271,10 @@ def stop_camera():
         camera = None
     return jsonify({"status":"stopped"})
 
-if __name__=="__main__":
+# ✅ Allow Gunicorn to run this app
+if __name__ != "__main__":
+    gunicorn_app = app
+
+# ✅ Run locally with Flask
+if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
